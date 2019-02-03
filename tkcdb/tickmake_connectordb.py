@@ -56,25 +56,36 @@ def main():
     device = get_cdb_device(url,name)
     tg = tickdb_generator(dbfile)
     points = {}
+
+    # build up a dict where each stream name maps to a a dict of time/data points
     for r in tg:
         stream_name = trackname_to_streamname(r["tracks_name"])
         t = datetime.datetime(r["year"], r["month"] + 1, r["day"], r["hour"], r["minute"], r["second"] ).timestamp()
-        d = 1
         if stream_name in points.keys():
-            points[stream_name].append({"t": t, "d": d})
+            if t in points[stream_name]:
+                points[stream_name][t] = points[stream_name][t] + 1
+            else:
+                points[stream_name][t] = 1
         else:
-            points[stream_name] = [{"t": t, "d": d}]
+            points[stream_name] = {t: 1}
 
     for stream_name in points.keys():
         stream = device[stream_name]
         if not stream.exists():
             stream.create({"type": "number"})
+        #figure out last item in the connectordb stream, and get timestamp for it
+        #so that we can avoid errors caused by attempting to re-upload old data points
         last=stream(transform="if last")
         if last is None:
             last = 0
+        elif last == []:
+            last = 0
         else:
             last = last[0]['t']
-        datapoint_array = points[stream_name]
+        datapoint_dict = points[stream_name]
+        datapoint_array=[]
+        for t in datapoint_dict.keys():
+            datapoint_array.append({'t': t, 'd': datapoint_dict[t]})
         datapoint_array = list(filter(lambda item: item['t'] > last, datapoint_array),)
         datapoint_array.sort(key=lambda item: item['t'])
         if len(datapoint_array) > 0:

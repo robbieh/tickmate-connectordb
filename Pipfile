@@ -7,7 +7,7 @@ verify_ssl = true
 
 [packages]
 connectordb = "*"
-pyyaml = "*"
+pyyaml = ">=4.2b1"
 configloader = "*"
 
 [requires]

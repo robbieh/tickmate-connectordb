@@ -4,10 +4,11 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+pbr = "*"
 
 [packages]
 connectordb = "*"
-pyyaml = ">=4.2b1"
+pyyaml = "==4.2b2"
 configloader = "*"
 
 [requires]

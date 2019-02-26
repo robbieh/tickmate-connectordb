@@ -1,3 +1,7 @@
 *.pyo
 *.pyc
 *.sw[op]
+build/
+dist/
+tickmate_connectordb.egg-info
+tickname_connectordb.egg-info

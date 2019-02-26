@@ -1,0 +1,4 @@
+configloader==1.0.1
+ConnectorDB==0.3.5
+PyYAML==4.2b2
+requests==2.21.0
